@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetherius-Customer Testimonials</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #151520;
+            --accent-primary: #6366f1;
+            --accent-cyan: #00d4ff;
+            --accent-glow: #818cf8;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at top, #1b2735 0%, #090a0f 100%);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        /* --- NAVIGATION BAR STYLES (UPDATED) --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-cta {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        /* --- Fullscreen Header Section --- */
+        .fullscreen-header {
+            height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+            text-align: center;
+            position: relative;
+             background: radial-gradient(ellipse at center, #1b2735 0%, #090a0f 100%);
+        }
+
+        .subtitle {
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .main-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .scroll-down-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 40px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 50px;
+        }
+        .scroll-down-indicator::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            width: 4px;
+            height: 8px;
+            background: var(--text-secondary);
+            border-radius: 4px;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite ease-in-out;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(12px);
+            }
+        }
+
+        /* --- Testimonials Section --- */
+        #testimonials {
+            padding: 80px 0 120px;
+            overflow: hidden; 
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            align-items: start;
+        }
+
+        .testimonial-column {
+            display: grid;
+            gap: 30px;
+            perspective: 1000px;
+        }
+        
+        .testimonial-column:nth-child(2) {
+            margin-top: 80px;
+        }
+
+        .testimonial-card, .customer-image {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .testimonial-card {
+            background-color: var(--bg-card);
+            padding: 30px;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .testimonial-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .customer-image {
+            height: 400px;
+        }
+        
+        .customer-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transform: scale(1.15);
+        }
+        
+        .testimonial-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15), rgba(0,0,0,0) 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+        
+        .testimonial-card:hover,
+        .customer-image:hover {
+            transform: translateY(-8px) scale(1.03) rotateX(5deg) rotateY(-5deg); 
+            border-color: var(--accent-primary);
+            box-shadow: 0 25px 50px rgba(99, 102, 241, 0.3);
+        }
+        
+        .testimonial-card:hover::before {
+            opacity: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .testimonial-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3rem;
+            }
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+            .testimonial-column:nth-child(2) {
+                margin-top: 0;
+            }
+             nav {
+                padding: 1.5rem 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- UPDATED: NAVIGATION BAR HTML -->
+    <nav>
+        <a href="#" class="logo">AETHERIUS</a>
+        <ul class="nav-links">
+            <li><a href="/Index.html#features">Features</a></li>
+                <li><a href="/Product.html">Products</a></li>
+                <li><a href="/Index.html#pricing">Pricing</a></li>
+                <li><a href="/testimonial.html">Reviews</a></li>
+                <li><a href="/aboutUs.html">About Us</a></li>
+        </ul>
+        <button class="nav-cta">Get Started</button>
+    </nav>
+
+
+    <header class="fullscreen-header">
+        <div class="container">
+            <p class="subtitle">Customer Testimonials</p>
+            <h1 class="main-title">Happy Sellers</h1>
+        </div>
+        <div class="scroll-down-indicator"></div>
+    </header>
+
+    <main>
+        <section id="testimonials">
+            <div class="container">
+                <div class="testimonial-grid">
+                    <!-- Column 1 -->
+                    <div class="testimonial-column">
+                        <div class="testimonial-card animate-on-scroll">
+                            <p>"This platform has taken a lot off our plate. The automated feedback system runs quietly in the background, and we've noticed our ratings stay more consistent without needing to chase anything manually."</p>
+                            <div class="testimonial-author">- Michael, UK Amazon Seller</div>
+                        </div>
+                        <div class="customer-image animate-on-scroll">
+                            <!-- REVERTED IMAGE -->
+                            <img src="https://placehold.co/400x500/222/fff?text=Customer" alt="Happy customer using a laptop" class="parallax-image">
+                        </div>
+                         <div class="testimonial-card animate-on-scroll">
+                            <p>"The analytics tools are simple enough for a beginner but powerful once you grow. I didn't even know review requests could be automated until I found this."</p>
+                            <div class="testimonial-author">- Emily, USA Amazon Seller</div>
+                        </div>
+                    </div>
+                    <!-- Column 2 -->
+                    <div class="testimonial-column">
+                        <div class="customer-image animate-on-scroll">
+                            <!-- REVERTED IMAGE -->
+                            <img src="https://placehold.co/400x400/333/fff?text=Customer" alt="Happy customer on their phone" class="parallax-image">
+                        </div>
+                        <div class="testimonial-card animate-on-scroll">
+                            <p>"I run a small store on the side, and honestly, I don't have time to check performance every day. It's a time-saver we didn't know we needed."</p>
+                            <div class="testimonial-author">- Sophie, USA Amazon Seller</div>
+                        </div>
+                         <div class="customer-image animate-on-scroll">
+                            <!-- REVERTED IMAGE -->
+                             <img src="https://placehold.co/400x600/444/fff?text=Customer" alt="Happy customer at a cafe" class="parallax-image">
+                        </div>
+                    </div>
+                    <!-- Column 3 -->
+                    <div class="testimonial-column">
+                        <div class="testimonial-card animate-on-scroll">
+                             <p>"Like a growing brand, feeling predictable pricing makes a big difference—especially when you're watching your margins closely. Order-based plans meant we weren't paying more just to access core tools."</p>
+                            <div class="testimonial-author">- David, CAN Amazon Seller</div>
+                        </div>
+                         <div class="customer-image animate-on-scroll">
+                            <!-- REVERTED IMAGE -->
+                           <img src="https://placehold.co/400x500/555/fff?text=Customer" alt="Happy customer working" class="parallax-image">
+                        </div>
+                         <div class="testimonial-card animate-on-scroll">
+                            <p>"The best part is the support. We had a niche issue with our setup and the team was incredibly responsive and helpful in getting it sorted out. A+"</p>
+                            <div class="testimonial-author">- Maria, AUS Amazon Seller</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            gsap.utils.toArray('.animate-on-scroll').forEach((card) => {
+                gsap.set(card, { opacity: 0, y: 100, scale: 0.95 });
+                
+                gsap.to(card, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 90%', 
+                        toggleActions: 'play none none none',
+                    }
+                });
+            });
+
+            gsap.utils.toArray(".parallax-image").forEach(img => {
+                gsap.to(img, {
+                    y: "-10%",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: img.closest('.customer-image'),
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>
+

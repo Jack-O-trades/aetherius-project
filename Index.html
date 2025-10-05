@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetherius - Your Online Shopping Destination</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #151520;
+            --accent-primary: #6366f1;
+            --accent-cyan: #00d4ff;
+            --accent-glow: #818cf8;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at top, #2c3e50, #000000);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ========== CUSTOM CURSOR ========== */
+
+        .cursor-follower {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.3s ease;
+        }
+
+        .ripple {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+            animation: ripple-animation 1s ease-out;
+            z-index: 9998;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* ========== PRELOADER ========== */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .loader-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .loader-shape {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-primary);
+            animation: shape-morph 1s ease-in-out infinite;
+        }
+
+        .loader-shape:nth-child(1) {
+            top: 0;
+            left: 0;
+            animation-delay: 0s;
+        }
+
+        .loader-shape:nth-child(2) {
+            top: 0;
+            right: 0;
+            animation-delay: 0.125s;
+        }
+
+        .loader-shape:nth-child(3) {
+            bottom: 0;
+            left: 0;
+            animation-delay: 0.25s;
+        }
+
+        .loader-shape:nth-child(4) {
+            bottom: 0;
+            right: 0;
+            animation-delay: 0.375s;
+        }
+
+        @keyframes shape-morph {
+            0%, 100% {
+                border-radius: 0%;
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                border-radius: 50%;
+                transform: rotate(180deg) scale(0.8);
+            }
+        }
+
+        /* ========== NAVIGATION ========== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-cta {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 6rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 10;
+            max-width: 1200px;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+            margin-bottom: 30px;
+            margin-top: 40px; /* Added margin to compensate for removed social proof */
+        }
+
+        /* Glowing effect on headline keywords */
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+            transition: text-shadow 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .hero h1 .highlight:hover {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.7));
+        }
+
+        /* AI Insights Badge */
+        .ai-insights {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .ai-insights:hover {
+            background-color: var(--text-primary);
+            color: var(--bg-dark);
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .ai-insights::before {
+            content: '✨';
+            font-size: 20px;
+            animation: sparkle 2s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.3) rotate(20deg);
+            }
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 1rem 2.5rem;
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            padding: 1rem 2.5rem;
+            background: transparent;
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        /* Floating Cards */
+        .floating-cards-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .card-set {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            padding-bottom: 15%;
+        }
+
+        .card-set.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .floating-card {
+            background: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            animation: float 8s ease-in-out infinite alternate;
+            width: 240px;
+            height: 160px;
+        }
+        
+        .content-card {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .content-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .content-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        @keyframes float {
+            from { transform: translateY(0px); }
+            to { transform: translateY(-15px); }
+        }
+
+        /* ========== SCROLLING LOGOS ========== */
+        .logo-bar {
+            padding: 60px 0;
+            position: relative;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-bar::before,
+        .logo-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 150px;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .logo-bar::before {
+            left: 0;
+            background: linear-gradient(to right, var(--bg-dark), transparent);
+        }
+
+        .logo-bar::after {
+            right: 0;
+            background: linear-gradient(to left, var(--bg-dark), transparent);
+        }
+
+        .logo-scroll {
+            display: flex;
+            width: max-content;
+            animation: scroll 40s linear infinite;
+        }
+
+        .logo-scroll svg {
+            height: 35px;
+            margin: 0 50px;
+            fill: var(--text-secondary);
+            transition: fill 0.3s ease;
+        }
+
+        .logo-scroll svg:hover {
+            fill: var(--text-primary);
+        }
+
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* ========== FEATURES SECTION ========== */
+        .features {
+            padding: 8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .features-header h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .features-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .features-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .features-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .feature-info h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-info p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .feature-list li i {
+            color: var(--accent-primary);
+        }
+
+        .feature-visual {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .graph-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+
+        .graph-bar {
+            position: absolute;
+            bottom: 0;
+            width: 12%;
+            background: linear-gradient(180deg, var(--accent-glow), var(--accent-primary));
+            border-radius: 8px 8px 0 0;
+            transition: height 0.6s ease;
+        }
+
+        /* ========== PARALLAX SECTION ========== */
+        .parallax-section {
+            padding: 8rem 2rem;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .parallax-content {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        .parallax-content h2 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 2rem;
+            letter-spacing: -1px;
+        }
+
+        .parallax-layers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .parallax-bg {
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1), transparent);
+        }
+
+        .parallax-mid {
+            background: radial-gradient(circle at 30% 70%, rgba(129, 140, 248, 0.15), transparent);
+        }
+
+        .parallax-fg {
+            background: radial-gradient(circle at 70% 30%, rgba(99, 102, 241, 0.2), transparent);
+        }
+
+        /* ========== PRICING SECTION ========== */
+        .pricing {
+            padding: 8rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .pricing-header h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1rem;
+        }
+
+        .pricing-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .toggle-switch {
+            width: 60px;
+            height: 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-primary);
+        }
+
+        .toggle-knob {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(28px);
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            transition: all 0.3s;
+            position: relative;
+            text-align: center;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.15), rgba(0,0,0,0) 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+            border-radius: 20px;
+        }
+
+        .pricing-card:hover::before {
+            opacity: 1;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent-primary);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+            z-index: 2;
+        }
+
+        .pricing-card.featured::after {
+            content: 'Most Popular';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            z-index: 3;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-price {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .pricing-features i {
+            color: var(--accent-primary);
+        }
+
+        .pricing-cta {
+            width: 100%;
+            padding: 1rem;
+            background: transparent;
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .pricing-card.featured .pricing-cta {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .pricing-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        /* ========== FINAL CTA ========== */
+        .final-cta {
+            padding: 10rem 2rem;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(99, 102, 241, 0.1), transparent);
+        }
+
+        .final-cta h2 {
+            font-size: clamp(3rem, 7vw, 6rem);
+            margin-bottom: 2rem;
+            letter-spacing: -2px;
+        }
+
+        .final-cta p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            padding: 4rem 2rem 2rem;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+            text-align: left;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin: 0.75rem 0;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .floating-card {
+                display: none;
+            }
+
+            .features-content {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 1.5rem 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
+
+            .cursor-follower {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .features-tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="cursor-follower"></div>
+
+    <div class="preloader">
+        <div class="loader-container">
+            <div class="loader-shape"></div>
+            <div class="loader-shape"></div>
+            <div class="loader-shape"></div>
+            <div class="loader-shape"></div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">AETHERIUS</div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="/Product.html">Products</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="/testimonial.html">Reviews</a></li>
+            <li><a href="/aboutUs.html">About Us</a></li>
+        </ul>
+        <button class="nav-cta">Get Started</button>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>
+                Discover
+                <span class="highlight" data-cards="reports">Electronics</span>,
+                <span class="highlight" data-cards="forecasts">Fashion</span>,
+                <span class="highlight" data-cards="dashboards">Home Goods</span> &
+                <span class="highlight" data-cards="consolidations">More</span>
+            </h1>
+            <div class="ai-insights">
+                Now with AI-powered recommendations
+            </div>
+            <div class="hero-buttons">
+                <button class="btn-primary">Start Shopping</button>
+                <button class="btn-secondary">
+                    <i class="ph-fill ph-gift"></i> View Daily Deals
+                </button>
+            </div>
+        </div>
+
+        <div class="floating-cards-container">
+            <div id="reports-cards" class="card-set">
+                <div class="floating-card content-card">
+                    <h4>Smartphones</h4>
+                    <p>The latest models from top brands.</p>
+                </div>
+                <div class="floating-card content-card">
+                    <h4>Laptops</h4>
+                    <p>Power and portability for work and play.</p>
+                </div>
+                <div class="floating-card content-card">
+                    <h4>Headphones</h4>
+                    <p>Immerse yourself in high-fidelity audio.</p>
+                </div>
+            </div>
+            <div id="forecasts-cards" class="card-set">
+                <div class="floating-card content-card">
+                    <h4>Men's Fashion</h4>
+                    <p>Sharp styles for the modern man.</p>
+                </div>
+                <div class="floating-card content-card">
+                    <h4>Women's Fashion</h4>
+                    <p>Elegant and trendy apparel.</p>
+                </div>
+                <div class="floating-card content-card">
+                    <h4>Footwear</h4>
+                    <p>Step out in style and comfort.</p>
+                </div>
+            </div>
+            <div id="dashboards-cards" class="card-set">
+                <div class="floating-card content-card">
+                    <h4>Kitchenware</h4>
+                    <p>Equip your kitchen with the best tools.</p>
+                </div>
+                <div class="floating-card content-card">
+                    <h4>Decor</h4>
+                    <p>Beautify your space with unique items.</p>
+                </div>
+                 <div class="floating-card content-card">
+                    <h4>Furniture</h4>
+                    <p>Comfort and style for every room.</p>
+                </div>
+            </div>
+            <div id="consolidations-cards" class="card-set">
+                <div class="floating-card content-card">
+                    <h4>Books</h4>
+                    <p>Discover your next great read.</p>
+                </div>
+                <div class="floating-card content-card">
+                    <h4>Toys & Games</h4>
+                    <p>Fun for all ages.</p>
+                </div>
+                <div class="floating-card content-card">
+                    <h4>Sporting Goods</h4>
+                    <p>Gear up for your favorite activities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="logo-bar">
+        <div class="logo-scroll">
+            <!-- Logos for a shopping site would be brands, payment providers etc. -->
+            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Visa</title><path d="M11.512 12.164c.26-.118.46-.296.601-.535l.487-1.04-.98.225c-.21.059-.42.06-.63.03l-.317-.046v1.366zm6.012-3.132c-.318-.088-.787-.206-1.317-.315-.22-.059-2.043-.48-2.043-.48s-.18.499-.21.565c-.21.432-.877.89-1.217 1.059l-1.318.655-.26.634.02 0c.66.166 1.488.312 2.375.44.887.13 1.62.23 2.217.29l.167.033c.42.045.81-.045 1.15-.27.38-.254.59-.654.64-1.123.03-.314-.02-.614-.15-.893a.968.968 0 00-.775-.555zm-8.398 4.347c.21-.015.42-.03.63-.044l.437-.045.24-.555-.03-.01-4.24-1.007-.06.27c-.22 1.012.3 1.956 1.2 2.4.15.074.3.134.45.18l.21.06v.015l.044-.015.11-.03-.015-.015c.06-.014.12-.03.18-.044l.32-.09.3-.104.09-.03.137-.06c.09-.044.18-.09.27-.15l.074-.06c.09-.073.18-.15.255-.24l.06-.074.12-.18.046-.075.09-.164.014-.03zm5.02-1.952c-2.435-.605-4.81-1.2-5.912-1.474l-.94 2.222c-.134.314-.12.654.03.968.15.314.42.565.75.696.887.33 1.983.18 2.657-.03l.39-.12.24-.074.27-.09.284-.104c.81-.298 1.153-.784 1.233-1.25l.407-1.936zM18.47 6.47c.36.8-1.2 2.3-3.6 2.8-1.05.21-2.2.06-2.9-.09l.66-2.97c.33-.69.96-1.08 1.62-1.14.93-.09 1.92.36 2.52.93.81.749 1.349 1.474 1.7 2.47z"/></svg>
+            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Mastercard</title><path d="M12 1.608c-5.74 0-10.392 4.652-10.392 10.392S6.26 22.392 12 22.392 22.392 17.74 22.392 12 17.74 1.608 12 1.608zM9.06 8.016c-1.385 1.57-2.14 3.79-2.02 6.012.122 2.22 1.15 4.29 2.8 5.61a7.95 7.95 0 005.152-8.358 7.95 7.95 0 00-5.932-3.264zm5.88 2.316a7.95 7.95 0 00-5.15 8.356c1.386-1.57 2.14-3.788 2.02-6.01-.12-2.22-1.15-4.29-2.8-5.612a7.95 7.95 0 005.93 3.265z"/></svg>
+            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>PayPal</title><path d="M7.064 21.332H2.49c-.22 0-.415-.15-.47-.363l-2-7.468c-.054-.21.07-.42.284-.47.114-.027.228-.004.326.06L5.34 16.27c.21.14.495.02.58-.23L8.14 9.11c.14-.37.51-.58.89-.48l3.14.8c.21.05.38.21.45.42l2.02 6.03.38-1.14c.14-.42.54-.66.97-.57l3.15.7c.18.04.34.16.44.31.1.16.12.35.06.52l-2.06 6.13c-.05.16-.2.27-.37.27H7.064zM22.13 4.264c-.11-.15-.28-.24-.46-.24H16.4c-2.32 0-4.21 1.83-4.3 4.14-.08 2.18 1.58 4.02 3.73 4.2l-1.1 3.27c-.08.22.04.46.26.54.06.02.12.03.18.03.16 0 .31-.08.4-.23L16.5 13.4c2.1-.33 3.6-2.16 3.7-4.32.1-2.26-1.5-4.14-3.6-4.34.18-1.84 1.73-3.2 3.6-3.2h.56c.22 0 .41.15.47.36l1.32 4.93c.05.21-.07.42-.28.47-.21.05-.42-.07-.47-.28l-1.2-4.48z"/></svg>
+            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Stripe</title><path d="M19.9001 2.3H4.1001c-1.1 0-2 .9-2 2v4.8c0 1.1.9 2 2 2h15.8c1.1 0 2-.9 2-2V4.3c0-1.1-.9-2-2-2zm-15.8 7c-.2 0-.4-.1-.5-.2s-.2-.3-.2-.5V4.3c0-.2.1-.4.2-.5s.3-.2.5-.2h15.8c.2 0 .4.1.5.2s.2.3.2.5v4.8c0 .2-.1.4-.2.5s-.3.2-.5.2H4.1001zm0 3.8h15.8c1.1 0 2 .9 2 2v4.8c0 1.1-.9 2-2 2H4.1001c-1.1 0-2-.9-2-2v-4.8c0-1.1.9-2 2-2zm15.8 7c.2 0 .4-.1.5-.2s.2-.3.2-.5v-4.8c0-.2-.1-.4-.2-.5s-.3-.2-.5-.2H4.1001c-.2 0-.4.1-.5.2s-.2.3-.2.5v4.8c0 .2.1.4.2.5s.3.2.5.2h15.8zM8.3001 5.9h2.9c.7 0 1.3-.6 1.3-1.3s-.6-1.3-1.3-1.3h-2.9c-.7 0-1.3.6-1.3 1.3s.6 1.3 1.3 1.3zm0 7.6h7.3c.7 0 1.3-.6 1.3-1.3s-.6-1.3-1.3-1.3h-7.3c-.7 0-1.3.6-1.3 1.3s.6 1.3 1.3 1.3z"/></svg>
+            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Visa</title><path d="M11.512 12.164c.26-.118.46-.296.601-.535l.487-1.04-.98.225c-.21.059-.42.06-.63.03l-.317-.046v1.366zm6.012-3.132c-.318-.088-.787-.206-1.317-.315-.22-.059-2.043-.48-2.043-.48s-.18.499-.21.565c-.21.432-.877.89-1.217 1.059l-1.318.655-.26.634.02 0c.66.166 1.488.312 2.375.44.887.13 1.62.23 2.217.29l.167.033c.42.045.81-.045 1.15-.27.38-.254.59-.654.64-1.123.03-.314-.02-.614-.15-.893a.968.968 0 00-.775-.555zm-8.398 4.347c.21-.015.42-.03.63-.044l.437-.045.24-.555-.03-.01-4.24-1.007-.06.27c-.22 1.012.3 1.956 1.2 2.4.15.074.3.134.45.18l.21.06v.015l.044-.015.11-.03-.015-.015c.06-.014.12-.03.18-.044l.32-.09.3-.104.09-.03.137-.06c.09-.044.18-.09.27-.15l.074-.06c.09-.073.18-.15.255-.24l.06-.074.12-.18.046-.075.09-.164.014-.03zm5.02-1.952c-2.435-.605-4.81-1.2-5.912-1.474l-.94 2.222c-.134.314-.12.654.03.968.15.314.42.565.75.696.887.33 1.983.18 2.657-.03l.39-.12.24-.074.27-.09.284-.104c.81-.298 1.153-.784 1.233-1.25l.407-1.936zM18.47 6.47c.36.8-1.2 2.3-3.6 2.8-1.05.21-2.2.06-2.9-.09l.66-2.97c.33-.69.96-1.08 1.62-1.14.93-.09 1.92.36 2.52.93.81.749 1.349 1.474 1.7 2.47z"/></svg>
+            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Mastercard</title><path d="M12 1.608c-5.74 0-10.392 4.652-10.392 10.392S6.26 22.392 12 22.392 22.392 17.74 22.392 12 17.74 1.608 12 1.608zM9.06 8.016c-1.385 1.57-2.14 3.79-2.02 6.012.122 2.22 1.15 4.29 2.8 5.61a7.95 7.95 0 005.152-8.358 7.95 7.95 0 00-5.932-3.264zm5.88 2.316a7.95 7.95 0 00-5.15 8.356c1.386-1.57 2.14-3.788 2.02-6.01-.12-2.22-1.15-4.29-2.8-5.612a7.95 7.95 0 005.93 3.265z"/></svg>
+            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>PayPal</title><path d="M7.064 21.332H2.49c-.22 0-.415-.15-.47-.363l-2-7.468c-.054-.21.07-.42.284-.47.114-.027.228-.004.326.06L5.34 16.27c.21.14.495.02.58-.23L8.14 9.11c.14-.37.51-.58.89-.48l3.14.8c.21.05.38.21.45.42l2.02 6.03.38-1.14c.14-.42.54-.66.97-.57l3.15.7c.18.04.34.16.44.31.1.16.12.35.06.52l-2.06 6.13c-.05.16-.2.27-.37.27H7.064zM22.13 4.264c-.11-.15-.28-.24-.46-.24H16.4c-2.32 0-4.21 1.83-4.3 4.14-.08 2.18 1.58 4.02 3.73 4.2l-1.1 3.27c-.08.22.04.46.26.54.06.02.12.03.18.03.16 0 .31-.08.4-.23L16.5 13.4c2.1-.33 3.6-2.16 3.7-4.32.1-2.26-1.5-4.14-3.6-4.34.18-1.84 1.73-3.2 3.6-3.2h.56c.22 0 .41.15.47.36l1.32 4.93c.05.21-.07.42-.28.47-.21.05-.42-.07-.47-.28l-1.2-4.48z"/></svg>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="features-header">
+            <h2>Everything you need for a great shop</h2>
+            <p>Powerful features that make your shopping experience seamless</p>
+        </div>
+
+        <div class="features-tabs">
+            <button class="tab-btn active" data-tab="billing">
+                <i class="ph ph-credit-card"></i>
+                Easy Payments
+            </button>
+            <button class="tab-btn" data-tab="analytics">
+                <i class="ph ph-truck"></i>
+                Fast Shipping
+            </button>
+            <button class="tab-btn" data-tab="automation">
+                <i class="ph ph-package"></i>
+                Order Tracking
+            </button>
+            <button class="tab-btn" data-tab="security">
+                <i class="ph ph-lock"></i>
+                Secure Checkout
+            </button>
+        </div>
+
+        <div class="features-content">
+            <div class="feature-info">
+                <h3 id="feature-title">Seamless Payment Experience</h3>
+                <p id="feature-description">Pay with your favorite methods. Our checkout is fast, secure, and easy to use, so you can get back to what matters.</p>
+                <ul class="feature-list">
+                    <li><i class="ph ph-check-circle"></i> Multiple payment options</li>
+                    <li><i class="ph ph-check-circle"></i> Apple Pay & Google Pay</li>
+                    <li><i class="ph ph-check-circle"></i> Save cards for future use</li>
+                    <li><i class="ph ph-check-circle"></i> Encrypted transactions</li>
+                </ul>
+            </div>
+            <div class="feature-visual">
+                <div class="graph-container" id="feature-graph">
+                    <div class="graph-bar" style="left: 10%; height: 60%;"></div>
+                    <div class="graph-bar" style="left: 25%; height: 75%;"></div>
+                    <div class="graph-bar" style="left: 40%; height: 45%;"></div>
+                    <div class="graph-bar" style="left: 55%; height: 85%;"></div>
+                    <div class="graph-bar" style="left: 70%; height: 95%;"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="parallax-section">
+        <div class="parallax-layers">
+            <div class="parallax-layer parallax-bg"></div>
+            <div class="parallax-layer parallax-mid"></div>
+            <div class="parallax-layer parallax-fg"></div>
+        </div>
+        <div class="parallax-content">
+            <h2>A more engaging way<br>to discover products</h2>
+            <p style="font-size: 1.2rem; color: var(--text-secondary); margin-top: 1rem;">Experience shopping that feels natural and inspiring</p>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="pricing-header">
+            <h2>Our Membership & Shipping Plans</h2>
+            <p style="color: var(--text-secondary); margin-top: 1rem;">Choose a plan that fits your shopping needs</p>
+            <div class="pricing-toggle">
+                <span>Monthly</span>
+                <div class="toggle-switch" id="pricingToggle">
+                    <div class="toggle-knob"></div>
+                </div>
+                <span>Annual</span>
+            </div>
+        </div>
+
+        <div class="pricing-cards">
+            <div class="pricing-card">
+                <h3>Standard Shopper</h3>
+                <div class="pricing-price">
+                    Free
+                </div>
+                <p style="color: var(--text-secondary);">Perfect for the casual shopper</p>
+                <ul class="pricing-features">
+                    <li><i class="ph ph-check-circle"></i> Access to all products</li>
+                    <li><i class="ph ph-check-circle"></i> Standard 5-7 day shipping</li>
+                    <li><i class="ph ph-check-circle"></i> Basic email support</li>
+                    <li><i class="ph ph-check-circle"></i> Save items to wishlist</li>
+                </ul>
+                <button class="pricing-cta">Start Shopping</button>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Prime Member</h3>
+                <div class="pricing-price">
+                    <span>$</span>9.99<span>/month</span>
+                </div>
+                <p style="color: var(--text-secondary);">For savvy shoppers who want the best perks</p>
+                <ul class="pricing-features">
+                    <li><i class="ph ph-check-circle"></i> Free 2-day shipping</li>
+                    <li><i class="ph ph-check-circle"></i> Exclusive member-only deals</li>
+                    <li><i class="ph ph-check-circle"></i> Early access to new arrivals</li>
+                    <li><i class="ph ph-check-circle"></i> Priority customer support</li>
+                    <li><i class="ph ph-check-circle"></i> Hassle-free returns</li>
+                </ul>
+                <button class="pricing-cta">Become a Member</button>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Business Pro</h3>
+                <div class="pricing-price">
+                    <span>$</span>49<span>/month</span>
+                </div>
+                <p style="color: var(--text-secondary);">For businesses and bulk purchasers</p>
+                <ul class="pricing-features">
+                    <li><i class="ph ph-check-circle"></i> All Prime Member benefits</li>
+                    <li><i class="ph ph-check-circle"></i> Bulk order discounts</li>
+                    <li><i class="ph ph-check-circle"></i> Dedicated account manager</li>
+                    <li><i class="ph ph-check-circle"></i> Tax-exempt purchasing</li>
+                    <li><i class="ph ph-check-circle"></i> Net 30 payment terms</li>
+                </ul>
+                <button class="pricing-cta">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <h2>Ready to start shopping?</h2>
+        <p>Join thousands of happy customers and find everything you need</p>
+        <button class="btn-primary" style="font-size: 1.1rem; padding: 1.25rem 3rem;">Browse All Products</button>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Shop</h4>
+                <ul>
+                    <li><a href="#">New Arrivals</a></li>
+                    <li><a href="#">Deals</a></li>
+                    <li><a href="#">Electronics</a></li>
+                    <li><a href="#">Fashion</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Track Order</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Licenses</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Aetherius. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ========== PRELOADER ==========
+        window.addEventListener('load', () => {
+            const preloader = document.querySelector('.preloader');
+            gsap.to(preloader, {
+                opacity: 0,
+                duration: 0.8,
+                delay: 1.2,
+                onComplete: () => {
+                    preloader.style.display = 'none';
+                }
+            });
+        });
+
+        // ========== CUSTOM CURSOR ==========
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursorFollower, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.4
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = e.clientX + 'px';
+            ripple.style.top = e.clientY + 'px';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            document.body.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 1000);
+        });
+
+        const interactiveElements = document.querySelectorAll('button, a, .tab-btn, .highlight');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(cursorFollower, { scale: 1.5, duration: 0.3 });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(cursorFollower, { scale: 1, duration: 0.3 });
+            });
+        });
+
+        // ========== GSAP SCROLL ANIMATIONS ==========
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.from('.graph-bar', {
+            height: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power2.out',
+            delay: 2
+        });
+
+        gsap.utils.toArray('section').forEach((section) => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    end: 'top 50%',
+                    scrub: 1
+                }
+            });
+        });
+
+        // ========== HERO INTERACTIVE HEADLINE ==========
+        const highlights = document.querySelectorAll('.highlight');
+        const cardSets = document.querySelectorAll('.card-set');
+        let currentVisibleSet = null;
+
+        highlights.forEach(highlight => {
+            highlight.addEventListener('mouseenter', () => {
+                const targetId = highlight.dataset.cards + '-cards';
+                const targetSet = document.getElementById(targetId);
+
+                if (currentVisibleSet && currentVisibleSet !== targetSet) {
+                    currentVisibleSet.classList.remove('visible');
+                }
+
+                if (targetSet) {
+                    targetSet.classList.add('visible');
+                    currentVisibleSet = targetSet;
+                }
+            });
+        });
+
+        const headline = document.querySelector('.hero h1');
+        headline.addEventListener('mouseleave', () => {
+            if (currentVisibleSet) {
+                currentVisibleSet.classList.remove('visible');
+                currentVisibleSet = null;
+            }
+        });
+
+        // ========== FEATURES TABS ==========
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const featureTitle = document.getElementById('feature-title');
+        const featureDescription = document.getElementById('feature-description');
+        const featureGraph = document.getElementById('feature-graph');
+
+        const featuresData = {
+            billing: {
+                title: 'Seamless Payment Experience',
+                description: 'Pay with your favorite methods. Our checkout is fast, secure, and easy to use, so you can get back to what matters.',
+                graphHeights: ['60%', '75%', '45%', '85%', '95%']
+            },
+            analytics: {
+                title: 'Lightning Fast Shipping',
+                description: 'Get your products delivered to your door in record time. We partner with top carriers to ensure your package arrives safely and quickly.',
+                graphHeights: ['40%', '65%', '80%', '55%', '90%']
+            },
+            automation: {
+                title: 'Real-Time Order Tracking',
+                description: 'Know exactly where your order is at all times. From our warehouse to your front door, you\'ll get live updates every step of the way.',
+                graphHeights: ['70%', '50%', '85%', '65%', '75%']
+            },
+            security: {
+                title: 'Enterprise-Grade Security',
+                description: 'Shop with confidence. Your personal and payment information is protected by bank-level encryption and the latest security standards.',
+                graphHeights: ['90%', '85%', '95%', '88%', '92%']
+            }
+        };
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const tab = btn.dataset.tab;
+                const data = featuresData[tab];
+
+                gsap.to([featureTitle, featureDescription], {
+                    opacity: 0,
+                    y: -20,
+                    duration: 0.3,
+                    onComplete: () => {
+                        featureTitle.textContent = data.title;
+                        featureDescription.textContent = data.description;
+                        gsap.to([featureTitle, featureDescription], {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.3
+                        });
+                    }
+                });
+
+                const bars = featureGraph.querySelectorAll('.graph-bar');
+                bars.forEach((bar, i) => {
+                    gsap.to(bar, {
+                        height: data.graphHeights[i],
+                        duration: 0.6,
+                        delay: i * 0.1,
+                        ease: 'power2.out'
+                    });
+                });
+            });
+        });
+
+        // ========== PARALLAX SECTION ==========
+        gsap.to('.parallax-bg', {
+            y: -100,
+            scrollTrigger: {
+                trigger: '.parallax-section',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1
+            }
+        });
+
+        gsap.to('.parallax-mid', {
+            y: -200,
+            scrollTrigger: {
+                trigger: '.parallax-section',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1
+            }
+        });
+
+        gsap.to('.parallax-fg', {
+            y: -300,
+            scrollTrigger: {
+                trigger: '.parallax-section',
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1
+            }
+        });
+
+        // ========== PRICING TOGGLE ==========
+        const pricingToggle = document.getElementById('pricingToggle');
+        const pricingCards = document.querySelectorAll('.pricing-card');
+        const pricingPrices = document.querySelectorAll('.pricing-price');
+        
+        const monthlyPrices = ['Free', '9.99', '49'];
+        const annualPrices = ['Free', '8.25', '41']; // Monthly price when billed annually
+
+        pricingToggle.addEventListener('click', () => {
+            pricingToggle.classList.toggle('active');
+            const isAnnual = pricingToggle.classList.contains('active');
+
+            pricingCards.forEach(card => card.classList.remove('featured'));
+            if (isAnnual) {
+                pricingCards[2].classList.add('featured');
+            } else {
+                pricingCards[1].classList.add('featured');
+            }
+
+            pricingPrices.forEach((price, i) => {
+                const priceValue = isAnnual ? annualPrices[i] : monthlyPrices[i];
+                
+                gsap.to(price, {
+                    opacity: 0,
+                    y: -10,
+                    duration: 0.2,
+                    onComplete: () => {
+                        if (priceValue === 'Free') {
+                            price.innerHTML = 'Free';
+                        } else {
+                            price.innerHTML = `<span>$</span>${priceValue}<span>/month</span>`;
+                        }
+                        gsap.to(price, {
+                            opacity: 1,
+                            y: 0,
+                            duration: 0.2
+                        });
+                    }
+                });
+            });
+        });
+
+        // Pricing cards hover effect
+        pricingCards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                gsap.to(card, {
+                    scale: 1.02,
+                    duration: 0.3
+                });
+            });
+            card.addEventListener('mouseleave', () => {
+                gsap.to(card, {
+                    scale: 1,
+                    duration: 0.3
+                });
+            });
+        });
+
+        // ========== SMOOTH SCROLL ==========
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
