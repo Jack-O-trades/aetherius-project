@@ -7,6 +7,7 @@ Features added-
 i)Analytics with proper graphs and statistics
 
 ii)Fashion/Electronic/Household products, along with a cart function
+
 iii)Customer Reviews
 
 iv)A billing interface with working Monthly and Annual Subscription
